@@ -10,7 +10,10 @@ def multiplicacao(x, y):
     return x * y
 
 def divisao(x, y):
-    return x / y if y != 0 else -1
+    if y != 0:
+        return x / y
+    else:
+        return -1
 
 server = SimpleXMLRPCServer(("localhost", 8080))
 
