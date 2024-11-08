@@ -15,9 +15,9 @@ def divisao(x, y):
     else:
         return -1
 
-server = SimpleXMLRPCServer(("localhost", 8080))
 
-server.server_activate
+# Criando o servidor localmente 
+server = SimpleXMLRPCServer(("localhost", 8080))
 
 
 # Registrando funções para acesso remoto
