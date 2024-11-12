@@ -5,7 +5,7 @@ import time
 from paho.mqtt import client as mqtt_client
 
 
-broker = 'broker.emqx.io'
+host = '127.0.0.1'
 port = 1883
 topic = "calc/op"
 
@@ -22,7 +22,7 @@ def connect_mqtt():
         callback_api_version= mqtt_client.CallbackAPIVersion.VERSION2,
         client_id=client_id )
     client.on_connect = on_connect
-    client.connect( broker, port )
+    client.connect( host=host, port=port, keepalive=60 )
     return client
 
 
@@ -34,9 +34,9 @@ def publish( client ):
         print(msg)
         
         result = client.publish( topic, msg )
-        
-        print(f'{result[0]}')
+
         status = result[0]
+
         if status == 0:
             print(f"Send `{msg}` to topic `{topic}`")
         else:

@@ -1,55 +1,69 @@
 import random
-
+import signal
 from paho.mqtt import client as mqtt_client
 
-
-broker = 'broker.emqx.io'
+host = '127.0.0.1'
 port = 1883
 topic = "calc/op"
-# generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 100)}'
-# username = 'emqx'
-# password = 'public'
+
+signal = signal.signal( signal.SIGINT, quit )
 
 
 def connect_mqtt() -> mqtt_client:
     def on_connect( client, userdata, flags, rc, properties ):
         if rc == 0:
-            print("Connected to MQTT Broker!")
+            print(f"Connected to MQTT {host}!")
         else:
             print("Failed to connect, return code %d\n", rc)
 
     client = mqtt_client.Client(
         callback_api_version= mqtt_client.CallbackAPIVersion.VERSION2,
         client_id=client_id )
+    
     client.on_connect = on_connect
-    client.connect(broker, port)
+    client.connect( host=host, port=port, keepalive=60 )
+    
     return client
 
 
-def subscribe(client: mqtt_client):
-    def on_message( client, userdata, msg ):
-
-        msg = msg.payload.decode()
-        print(msg)
-
-        print(f"Easy: {msg}")
-
-        # op = msg.payload.decode()
-
-        # print(f"{op}")
-
-        # match msg.payload:
-        #     case '1':
-        #         return
-
+def subscribe( client: mqtt_client ):
     client.subscribe(topic)
     client.on_message = on_message
+
+def on_message( client, userdata, msg ):
+        msg = msg.payload.decode()
+        print(f"Easy: {msg.payload.decode()}")
+
+        op = msg[0]
+
+        match op:
+            case 'ADD':
+                print(add( 1, 1 ))
+                return
+            case 'SUB':
+                print(sub( 1, 1 ))
+                return
+            case 'MUL':
+                print(mul( 1, 1))
+                return
+            case 'DIV':
+                print(div( 1, 1 ))
+                return
+            case __:
+                return
+
+
+def on_disconnect(client, userdata, flags, rc, properties):
+    print("Disconnected successfully.")
 
 
 def run():
     client = connect_mqtt()
     subscribe(client)
+
+    client.on_disconnect = on_disconnect
+
     client.loop_forever()
 
 def add( a, b ):
