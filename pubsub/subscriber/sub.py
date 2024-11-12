@@ -7,7 +7,7 @@ port = 1883
 topic = "calc/op"
 client_id = f'python-mqtt-{random.randint(0, 100)}'
 
-signal = signal.signal( signal.SIGINT, quit )
+# signal = signal.signal( signal.SIGINT, quit )
 
 
 def connect_mqtt() -> mqtt_client:
@@ -32,26 +32,26 @@ def subscribe( client: mqtt_client ):
     client.on_message = on_message
 
 def on_message( client, userdata, msg ):
-        msg = msg.payload.decode()
-        print(f"Easy: {msg.payload.decode()}")
+        # msg = msg.payload.decode()
+        print(f"Easy: {msg.payload}")
 
-        op = msg[0]
+        # op = msg[0]
 
-        match op:
-            case 'ADD':
-                print(add( 1, 1 ))
-                return
-            case 'SUB':
-                print(sub( 1, 1 ))
-                return
-            case 'MUL':
-                print(mul( 1, 1))
-                return
-            case 'DIV':
-                print(div( 1, 1 ))
-                return
-            case __:
-                return
+        # match op:
+        #     case 'ADD':
+        #         print(add( 1, 1 ))
+        #         return
+        #     case 'SUB':
+        #         print(sub( 1, 1 ))
+        #         return
+        #     case 'MUL':
+        #         print(mul( 1, 1))
+        #         return
+        #     case 'DIV':
+        #         print(div( 1, 1 ))
+        #         return
+        #     case __:
+        #         return
 
 
 def on_disconnect(client, userdata, flags, rc, properties):
